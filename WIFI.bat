@@ -8,16 +8,23 @@ goto mainmenu
 :mainmenu
 title %testtitle% - Select your option
 cls
+echo m     m   "    mmmmmm   "                    m      "    ""#
+echo #  #  # mmm    #      mmm           m   m  mm#mm  mmm      #
+echo " #"# #   #    #mmmmm   #           #   #    #      #      #
+echo  ## ##"   #    #        #           #   #    #      #      #
+echo  #   #  mm#mm  #      mm#mm         "mm"#    "mm  mm#mm    "mm
 echo Please choose your action for your wifi needs (more options soon!)
-echo [1 for showing your wifi adpater properties]
-echo [2 for showing your AP properties]
-echo [3 for showing your WIFI PASSWORDS]
-echo [4 to CHANGE your AP prirority either Auto or Manual]
-echo [5 to DELETE APs (THIS CANNOT BE UNDONE)]
-echo [6 to Backup and Restore all of your WIFI configs]
-echo [7 to Generate wireless adapter report]
-echo [8 to quit]
-echo [9 for credit information]
+echo [1] for showing your wifi adpater properties
+echo [2] for showing your AP properties
+echo [3] for showing your WIFI PASSWORDS
+echo [4] to CHANGE your AP prirority either Auto or Manual
+echo [5] to DELETE APs (THIS CANNOT BE UNDONE)
+echo [6] to Backup and Restore all of your WIFI configs
+echo [7] to Generate wireless adapter report
+echo [8] for Wifi DIAGNOSTICS
+echo [9] for Credit Information
+echo [10] to check current ip configuration
+echo [11] to QUIT
 echo Created by CedMIX Productions
 echo e-mail: tg15ced.paltep@gmail.com
 set input=
@@ -29,14 +36,31 @@ if %input%==4 goto appriror if NOT goto mainmenu
 if %input%==5 goto delap if NOT goto mainmenu
 if %input%==6 goto bkupundres2r if NOT goto mainmenu
 if %input%==7 goto apstat if NOT goto mainmenu
-if %input%==8 goto quit if NOT goto mainmenu
+if %input%==8 goto wifidiag if NOT goto mainmenu
 if %input%==9 goto credits if NOT goto mainmenu
+if %input%==10 goto ipstat if NOT goto mainmenu
+if %input%==11 goto quit if NOT goto mainmenu
+
+:ipstat
+title %testtitle% - Showing your current IP Information:
+cls
+echo on
+ipconfig /all
+echo off
+echo ####################
+echo Press any key to return to main menu
+echo ####################
+pause
+echo off
+goto mainmenu
+
 
 :approp
 title %testtitle% - Showing your access point properties:
 cls
 echo on
 netsh wlan show profiles
+ipconfig /all
 echo off
 echo ####################
 echo Press any key to return to main menu
@@ -85,8 +109,8 @@ goto mainmenu
 title %testtitle% - AutoConnect option for AP
 cls
 echo Please choose your action to whether connect your wifi adapter automatically or manually
-echo [1 Automatic]
-echo [2 Manual]
+echo [1] Set connection mode to AUTOMATIC
+echo [2] Set connection mode to MANUAL
 set apauto=
 set /p apauto= Choose option:
 if %apauto%==1 goto autoap if NOT goto appriror
@@ -148,8 +172,8 @@ cls
 echo WARNING: THIS WILL DELETE A WIFI PROFILE! If you don't want to delete your ap
 echo type 2 to return to the main menu 
 echo DO YOU WANT TO CONTINUE DELETING YOUR WIRELESS AP?
-echo [1 YES]
-echo [2 NO]
+echo [1] YES (delete ap)
+echo [2] NO (return to main menu)
 set rmap=
 set /p rmap= Choose option:
 if %rmap%==1 goto delap_1 if NOT goto delap
@@ -170,8 +194,8 @@ set /p ssidname= Please type your selected SSID here (case sensitive):
 title %testtitle% - Are you sure to DELETE your WIRELESS AP?
 echo Are you sure to DELETE your WIRELESS AP?
 echo THIS ACTION CANNOT BE UNDONE!
-echo [1 YES]
-echo [2 NO]
+echo [1] YES (confirm delete)
+echo [2] NO (cancel and go back to main menu)
 set delurap=
 set /p delurap= Choose option:
 if %delurap%==1 goto delap_2 if NOT goto delap_2
@@ -193,8 +217,8 @@ goto mainmenu
 title %testtitle% - Backup and Restore for WIFI utility for Windows (tm)
 cls
 echo Please choose your action to whether backup or restore your wifi settings
-echo [1 Backup your WIFI settings]
-echo [2 Restore your WIFI settings]
+echo [1] BACKUP your WIFI settings
+echo [2] RESTORE your WIFI settings
 set bkupap=
 set /p bkupap= Choose option:
 if %bkupap%==1 goto bkupwifi if NOT goto bkupundres2r
@@ -203,8 +227,8 @@ if %bkupap%==2 goto res2rwifi if NOT goto bkupundres2r
 :bkupwifi
 title %testtitle% - Backing up wifi config
 cls
-set backupdir=C:\WIFI_Backup
-if exist "C:\WIFI_Backup" (goto bkupwifi2) else (goto nobkupwifi)
+set backupdir=%systemdrive%\WIFI_Backup
+if exist "%systemdrive%\WIFI_Backup" (goto bkupwifi2) else (goto nobkupwifi)
 :nobkupwifi
 mkdir "%backupdir%"
 goto bkupwifi2
@@ -282,7 +306,106 @@ pause
 echo off
 goto mainmenu
 
+:wifidiag
+title %testtitle% - Wifi DIAGNOSTICS
+echo off
+cls
+date /t
+time /t
+echo Pls run in admin mode first!!
+pause
+cls
+goto wifidiag_1
+:wifidiag_1
+title %testtitle% - Wifi DIAGNOSTICS (detecting OS)
+echo Detecting Windows(tm) operating system
+cls
+for /f %%i in ('ver^|find "5.1."') do set OS=Windows XP&& set osrecognized=1
+for /f %%i in ('ver^|find "5.2."') do set OS=Windows 2003&& set osrecognized=1
+for /f %%i in ('ver^|find "6.0."') do set OS=Windows Vista&& set osrecognized=2
+for /f %%i in ('ver^|find "6.1."') do set OS=Windows 7&& set osrecognized=2
+for /f %%i in ('ver^|find "6.2."') do set OS=Windows 8&& set osrecognized=2
+for /f %%i in ('ver^|find "6.3."') do set OS=Windows 8.1&& set osrecognized=2
+for /f %%i in ('ver^|find "10."')  do set OS=Windows 10&& set osrecognized=2
+if "%osrecognized%"=="2" (goto advdiag) ^
+else (goto legacydiag)
+
+
+:advdiag
+title %testtitle% - Wifi DIAGNOSTICS (Windows 7/8.x/10 Mode)
+echo Current OS: Windows(tm) Vista/7/8.1/10
+echo IP DUMPER Load options:
+choice /c ab /m "Press A for IP flusher, Press B for MS NET Diagnostics"
+IF ERRORLEVEL 1 IF NOT ERRORLEVEL 2 goto ipflush
+IF ERRORLEVEL 2 goto msnetdt
+
+:legacydiag
+title %testtitle% - Wifi DIAGNOSTICS (Windows XP/Server 2003)
+echo Current OS: Windows(tm) XP/Server 2003
+echo Ipflusher will load instead...
+pause
+goto ipflush
+
+:ipflush
+title %testtitle% - Wifi DIAGNOSTICS (Diagnosing using IPCONFIG)
+echo Check IP address
+ipconfig /all
+echo.
+pause
+echo Release IP Address
+ipconfig /release
+echo.
+echo Renew IP Address
+ipconfig /renew
+echo.
+echo Flush DNS
+ipconfig /flushdns
+echo.
+echo Renew DNS
+ipconfig /registerdns
+echo.
+goto fin
+
+:msnetdt
+echo Check IP address
+ipconfig /all
+echo.
+pause
+title %testtitle% - Wifi DIAGNOSTICS (Diagnosing using NetMSDT)
+echo Loading MS NET DIAGNOSTICS
+echo *Please Wait*
+msdt -skip TRUE -path %systemroot%\diagnostics\system\networking -ep NetworkDiagnosticPNI
+goto fin
+
+:fin
+cls
+title %testtitle% - Wifi DIAGNOSTICS (Network test)
+echo Executing autoping portable:
+echo date and time taken:
+date /t
+time /t
+echo Pinging Windows Update Servers
+echo Server 1: update.microsoft.com
+ping -a update.microsoft.com
+echo Server 2: download.windowsupdate.com
+ping -a download.windowsupdate.com
+echo Pinging speedtest.net
+ping -a speedtest.net
+echo Pinging dns.google.com
+ping -a dns.google.com
+echo Pinging youtube.com
+ping -a youtube.com
+echo Done!
+title %testtitle% - Diagnostic complete :)
+echo ####################
+echo Press any key to return to main menu
+echo ####################
+pause
+echo off
+goto mainmenu
+
 :quit
 title %testtitle% - Quitting program
 title Command Prompt
 cls
+echo Microsoft Windows [Version 10.0.17134.228]&echo (c) 2018 Microsoft Corporation. All rights reserved.
